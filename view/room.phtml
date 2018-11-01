@@ -9,33 +9,6 @@
     <link rel="stylesheet" href="./css/room.css">
     <script src="./jquery/jquery-3.3.1.js"></script>
     <script>
-        function copy_url() {
-            if(window.clipboardData && window.clipboardData.setData()){
-                //获取网址信息并复制在剪贴板里
-                window.clipboardData.setData('text',document.location.href);
-                alert('复制成功');
-            }else {
-                alert('浏览器不支持该复制方式');
-            }
-        }
-//
-        $.ajax({
-            url:"room.php?roomid=",
-            type:"post",
-            async:"true",
-            dataType:"json",
-            success:function(data){
-///
-//                alert(data);
-//                 site = data.username;
-//                 flag = data.flag;
-//                 guest_win = data.guest_win;
-//                  host_win  = data.host_win;
-//                 hostname= data.hostname;
-                document.write(data);
-                // document.getElementById("test_one").innerHTML = data;
-            }
-        });
         var allow_load = <?php
             if(($username == $guest && $flag == "guest") || ($username == $host && $flag == "host"))
                 echo 0;
@@ -80,48 +53,16 @@
             pla += "</table></td></tr></table>";
             return pla;
         }
-        var prev_click = "";//初始化上一个单击的棋子的变量
-        var chess_flash = "";//初始化棋子闪烁的变量
-        var flash_status = 0;//初始化棋子闪烁状态的变量
-        var message_guest = "";//初始化黑棋玩家聊天信息的变量
-        var message_host = "";//初始化红棋玩家聊天信息的变量
-        var prev_message_guest = "";//初始化黑棋玩家上一条聊天信息的变量
-        var prev_message_host = "";//初始化红棋玩家上一条聊天信息的变量
-        function click_chess(num){          //单击棋子操作
-            if(site != flag)               //如果当前的site值不等于棋子的走棋标记,弹出对方执棋提示信息
-                open_prompt("对方执棋！", '40%', '2%');
-            else{                       //否则执行走棋操作
-                close_prompt();                //关闭提示信息，设置为隐藏
-                for(var i = 1;i < 91;i ++)
-                    document.getElementById("chess_"+i).style.visibility = "visible";        //设置棋子可见
-                chess_flash = "";//棋子闪烁的变量定义为空
-                if(document.getElementById("chess_value_"+num).value.substr(0, 1) == site_num){
-                    chess_flash = num;//将当前单击的棋子定义为闪烁的棋子
-                    prev_click = num;        //记录棋子当前位置
-                }else{
-                    if(prev_click != ""){     //如果棋子的走棋方法不对，则弹出提示
-                        if(!check(document.getElementById('chess_value_'+prev_click).value, prev_click, num))
-                            open_prompt("您的操作有误！", '40%', '2%');
-                        else{//执行吃棋操作，将房间号、棋子的原始坐标点、目标坐标点传递到submit.php页面
-                            send_request("submit.php?roomid=<?php echo $_GET['id'];?>&from="+prev_click+"&to="+num+"&site="+site+"&time="+Math.random());
-                            allow_load = 1;//为变量赋值
-                            prev_click = "";//将上一单击棋子的值设置为空
-                        }
-                    }else
-                        open_prompt("这不是您的棋子！", '40%', '2%');//打开提示框
-                }
-            }
-        }
-        var prompt_count = 0;//初始化变量
-        function open_prompt(message, top, left){           //输出提示框所在的位置
-            prompt_count = 1;//将变量值设置为1
-            prompt_pause_time ++;                       //计时按每1秒进行累计
-            if(message){//如果聊天信息不为空
-                document.getElementById("item").style.visibility = "visible";//设置元素可见
-                document.getElementById("item").style.align = "center";//设置元素居中显示
-                document.getElementById("item").style.top = top ;//设置元素到顶部的距离
-                document.getElementById("item").style.left = left ;//设置元素到左侧的距离
-                document.getElementById("item").innerHTML =  '<table class=message_box><tr><td valign=middle>系统提示：<br><br>&nbsp;&nbsp;'+message+'</td></tr></table>';//设置元素中显示的内容
+        var prompt_count=0;
+        function open_prompt(message,top,left) {
+            prompt_count = 1;
+            prompt_pause_time ++;
+            if (message){
+                document.getElementById('item').style.visibility = "visible";
+                document.getElementById('item').style.align ="center";
+                document.getElementById('item').style.top = top;
+                document.getElementById('item').style.left = left;
+                document.getElementById('item').innerHTML = '<table class="message_box"><tr><td valign=middle>系统提示：<br><br>&nbsp;&nbsp;'+message+'</td></tr></table>';
             }
         }
         function close_prompt(){         //关闭提示信息，设置为隐藏
@@ -131,112 +72,47 @@
         }
         var http_request = false;
         function send_request(url) {
-            open_prompt((prompt_pause_time > 0?'等待对方响应（'+prompt_pause_time+'秒）':''), '40%', '2%');
-            if (window.XMLHttpRequest) { //创建XMLHTTPRequest对象
+            open_prompt((prompt_pause_time>0?'等待对方响应('+prompt_pause_time+'秒）'),'40%','2%');
+            if (window.XMLHttpRequest){
                 http_request = new XMLHttpRequest();
-                if (http_request.overrideMimeType) {
+                if(http_request.overrideMimeType){
                     http_request.overrideMimeType('text/xml');
                 }
-            } else if (window.ActiveXObject) { //创建XMLHTTP对象
-                try {
-                    http_request = new ActiveXObject("Msxml2.XMLHTTP");
-                } catch (e) {
-                    try {
+            }else if (window.ActiveXObject){
+                try{
+                    http_request =new ActiveXObject("Msxml2.XMLHTTP");
+                }catch (e) {
+                    try{
                         http_request = new ActiveXObject("Microsoft.XMLHTTP");
-                    } catch (e) {}
+                    }catch (e) {}
                 }
             }
-            if (!http_request) {//如果http_request的值为假，则不能创建对象
-                alert('不能创建 XMLHttpRequest 对象!');
+            if (!http_request){
+                alert ('不能创建XMLHttpRequest对象');
                 return false;
             }
-            http_request.onreadystatechange = processRequest;//指定回调方法
-            http_request.open('GET', url, true);//用GET方法提交数据
-            http_request.send(null);//发送的信息为空
+            http_request.onreadystatechange = processRequest;
+            http_request.open('GET',url,false);
+            http_request.send(null);
         }
-        var resultDiv;//定义创建div元素的变量
-        var text = new Array();//定义空数组
-        function processRequest() {             //设置棋盘中的提示信息框
-            if (http_request.readyState == 4 && http_request.status == 200) {//如果请求已完成并发送成功
-                if(http_request.responseText == "ended")//如果服务器返回值为ended
-                    document.location.href = "index.php";//页面跳转到游戏首页
-                text = http_request.responseText.split("|");//将返回值以|进行分割并返回数组
-                if(http_request.responseText){//如果返回值为真
-                    t3 = text[3];//获取被吃棋子的值
-                    message_guest = decodeURI(text[8]);//获取黑棋棋主聊天信息
-                    message_host = decodeURI(text[9]);//获取红棋棋主聊天信息
-                    guest_win = text[6];//获取黑棋棋主赢棋次数
-                    host_win = text[7];//获取红棋棋主赢棋次数
-                    if(text[4] != guest){//如果黑棋玩家名称有变化
-                        if(text[4] == ""){//如果黑棋玩家名称为空
-                            open_prompt(guest+"退出游戏房间！", '40%', '2%');//打开提示框
-                            guest = "";//将黑棋玩家名称定义为空
-                            prompt_pause_time = 0;//将提示框中的时间定义为0
-                            allow_load = 0;//为变量赋值
-                        }else{
-                            open_prompt(text[4]+"进入游戏房间！", '40%', '2%');//打开提示框
-                            guest = text[4];//重新定义黑棋玩家名称
-                            flag = text[1];//重新定义当前走棋标志
-                            document.getElementById("pla").innerHTML = form_chess(text[0]);//对棋盘进行重新布局
+        var text = new Array();
+        function processRequest() {
+            if (http_request.readyState == 4){
+                if(http_request.status == 200){
+                    if (http_request.responseText == "ended"){
+                        document.location.href = "index.php";
+                        text =http_request.responseText.split("|");
+                        if (http_request.responseText){
+                            t3 = text[3];
+                            message_guest = decodeURI(text[8]);
+                            message_host = decodeURI(text[9]);
+                            guest_win = text[6];
+                            host_win = text[7];
                         }
-                    }
-                    if(text[5] != host){//如果红棋玩家名称有变化
-                        if(text[5] == ""){//如果红棋玩家名称为空
-                            open_prompt(host+"退出游戏房间，您已成为房主！", '40%', '2%');//打开提示框
-                            host = "";//将红棋玩家名称定义为空
-                            prompt_pause_time = 0;//将提示框中的时间定义为0
-                            allow_load = 0;//为变量赋值
-                            if(site == 'guest'){//如果执行当前操作的是黑棋玩家
-                                setTimeout("location.href = 'join.php?roomid=<?php echo $_GET['id'];?>'",1000);//过1秒钟重新加入游戏
-                            }
+                        if (now_chess !=text[0]&& text[0]){
+                        //    对棋子重新布局
+                            document.getElementById("pla").innerHTML =form_chess(text[0]);
                         }
-                    }
-                }
-                if(now_chess != text[0] && text[0]){//如果棋盘棋子有变化
-                    document.getElementById("pla").innerHTML = form_chess(text[0]);//对棋子重新布局
-                    flag = text[1];//重新定义当前走棋标志
-                    moved = text[2];//重新定义当前移动的棋子
-                    if(site == flag)//如果执行当前操作的是要走棋的玩家
-                        allow_load = 0;//为变量赋值
-                    if(text[3] == "000" && site == "guest"){//如果黑棋“将”被吃，则黑棋执行如下语句
-                        resultDiv = document.createElement("div");//创建div元素
-                        resultDiv.className = "imgDiv";//为div设置class属性值
-                        resultDiv.innerHTML = "<img src='images/failure.png' width='100%' height='100%'>";//为div设置图片
-                        document.body.appendChild(resultDiv);//向body中添加div元素
-                        setTimeout("document.body.removeChild(resultDiv)",3000);//过3秒钟移除div元素
-                        eated = text[3];//将被吃的棋子赋值给变量eated
-                        game_ended = 1;//将游戏结束变量值定义为1
-                        allow_load = 1;//为变量赋值
-                        prompt_pause_time = 0;//将提示框中的时间定义为0
-                    }else if(text[3] == "100" && site == "host"){  //如果红棋“帅”被吃，则红棋执行如下语句
-                        resultDiv = document.createElement("div");//创建div元素
-                        resultDiv.className = "imgDiv";//为div设置class属性值
-                        resultDiv.innerHTML = "<img src='images/failure.png' width='100%' height='100%'>";//为div设置图片
-                        document.body.appendChild(resultDiv);//向body中添加div元素
-                        setTimeout("document.body.removeChild(resultDiv)",3000);//过3秒钟移除div元素
-                        eated = text[3];//将被吃的棋子赋值给变量eated
-                        game_ended = 1;//将游戏结束变量值定义为1
-                        prompt_pause_time = 0;//将提示框中的时间定义为0
-                    }else if(text[3] == "000" && site == "host"){  //如果黑棋“将”被吃，则红棋执行如下语句
-                        resultDiv = document.createElement("div");//创建div元素
-                        resultDiv.className = "imgDiv";//为div设置class属性值
-                        resultDiv.innerHTML = "<img src='images/success.png' width='100%' height='100%'>";//为div设置图片
-                        document.body.appendChild(resultDiv);//向body中添加div元素
-                        setTimeout("document.body.removeChild(resultDiv)",3000);//过3秒钟移除div元素
-                        eated = text[3];//将被吃的棋子赋值给变量eated
-                        game_ended = 1;//将游戏结束变量值定义为1
-                        prompt_pause_time = 0;//将提示框中的时间定义为0
-                    }else if(text[3] == "100" && site == "guest"){ //如果红棋“帅”被吃，则黑棋执行如下语句
-                        resultDiv = document.createElement("div");//创建div元素
-                        resultDiv.className = "imgDiv";//为div设置class属性值
-                        resultDiv.innerHTML = "<img src='images/success.png' width='100%' height='100%'>";//为div设置图片
-                        document.body.appendChild(resultDiv);//向body中添加div元素
-                        setTimeout("document.body.removeChild(resultDiv)",3000);//过3秒钟移除div元素
-                        eated = text[3];//将被吃的棋子赋值给变量eated
-                        game_ended = 1;//将游戏结束变量值定义为1
-                        prompt_pause_time = 0;//将提示框中的时间定义为0
-                    }else if(text[3] && eated != text[3] && text[3] != 'blank'){   //如果有新的棋子被吃
-                        eated = text[3];//将被吃的棋子赋值给变量eated
                     }
                 }
             }
@@ -251,6 +127,7 @@
             }
         }
     </script>
+    <script src="./js/room.js" type="application/javascript"></script>
 </head>
 <body>
 <table align="center" style="padding-top:5%;">
@@ -258,60 +135,46 @@
         <td width="210" rowspan="3" valign="top">
             <table width="191" height="100%" border="0" cellpadding="0" cellspacing="0">
                 <tr valign="top">
-                    <td height="240" valign="bottom" nowrap background="images/left1.png">
-                        <table width="191" height="60" border="0">
-                            <tr>
-                                <th width="40" height="30" align="right" valign="middle">
-                                    <div id="top_box_flag" width="100%"></div>
-                                </th>
-                                <th width="130" height="30" align="left" valign="middle">
-                                    <div id="top_box" width="100%"></div>
-                                </th>
-                                <th width="22" height="30" align="left" valign="middle"></th>
-                            </tr>
-                            <tr>
-                                <td height="30" align="left" valign="middle"></td>
-                                <td height="30" align="left" valign="top">
-                                    <div id="top_box_tongji" width="100%"></div>
-                                </td>
-                                <td height="30" align="left" valign="middle"></td>
-                            </tr>
-                        </table>
+                    <script>document.write("<td height=240 valign='bottom' nowrap background='images/"+(site=='host'?'left1':'left2')+".png'>")</script>
+                    <table width="191" height="60" border="0">
+                        <tr>
+                            <th width="40" height="30" align="right" valign="middle"><div id="top_box_flag" width="100%"></div></th>
+                            <th width="130" height="30" align="left" valign="middle"><div id="top_box" width="100%"></div></th>
+                            <th width="22" height="30" align="left" valign="middle"></th>
+                        </tr>
+                        <tr>
+                            <td height="30" align="left" valign="middle"></td>
+                            <td height="30" align="left" valign="top"><div id="top_box_tongji" width="100%"></div></td>
+                            <td height="30" align="left" valign="middle"></td>
+                        </tr>
+                    </table>
                     </td>
                 </tr>
                 <tr>
                     <td width="191" height="126" align="center">
-                        <img  onclick="javascript:copy_url();" src="images/left3.png" style="margin-top:6px;">
-                        <img src="images/btn_exit.png" width="90" height="39" style="margin-top:8px;">
-                        <img src='images/btn_end.png' width=90 height=39 border=0><br>
+                        <a href="javascript:copy_url()"><img src="images/left3.png" style="margin-top:6px;"></a>
+                        <script>document.write("<a href=exit.php?roomid=<?php echo $_GET['id'];?>&site="+site+"><img src='images/btn_exit.png' width=90 height=39 style='margin-top:8px;'></a>");</script>
+                        <script>if(site == "host") document.write("<a href=end.php?roomid=<?php echo $_GET['id'];?>><img src='images/btn_end.png' width=90 height=39 border=0></a>");</script><br>
                     </td>
                 </tr>
                 <tr valign="bottom">
-                    <td height="240" valign="bottom" nowrap background="images/left2.png">
-                        <table width="191" height="60" border="0">
-                            <tr>
-                                <th width="40" height="30" align="right">
-                                    <div id=bottom_box_flag width=100%></div>
-                                </th>
-                                <th width="130" align="left">
-                                    <div id=bottom_box width=100%></div>
-                                </th>
-                                <th width="22" align="left"></th>
-                            </tr>
-                            <tr>
-                                <td height="30" align="left"></td>
-                                <td height="30" align="left" valign="top">
-                                    <div id=bottom_box_tongji width=100%></div>
-                                </td>
-                                <td height="30" align="left"></td>
-                            </tr>
-                        </table>
+                    <script>document.write("<td height=240 valign='bottom' nowrap background='images/"+(site=='host'?'left2':'left1')+".png'>")</script>
+                    <table width="191" height="60" border="0">
+                        <tr><th width="40" height="30" align="right"><div id=bottom_box_flag width=100%></div></th>
+                            <th width="130" align="left"><div id=bottom_box width=100%></div></th>
+                            <th width="22" align="left"></th>
+                        </tr>
+                        <tr><td height="30" align="left"></td>
+                            <td height="30" align="left" valign="top"><div id=bottom_box_tongji width=100%></div></td>
+                            <td height="30" align="left"></td>
+                        </tr>
+                    </table>
                     </td>
                 </tr>
             </table>
         </td>
-        <td width="3" rowspan="3">
-            <div id="pla"></div>
+        <td width="3" rowspan="3" id="pla">
+<!--            <div ></div>-->
         </td>
         <td width="240" align="right" valign=top>
             <table style="position:relative;">
@@ -319,14 +182,10 @@
                     <td><img src="images/sign.png" width="220" height="63"></td>
                 </tr>
                 <tr>
-                    <td><img src="images/roomcode.png" width="220" height="70"><div class="roomcode">
-                        <?php echo $name;?></div></td>
+                    <td><img src="images/roomcode.png" width="220" height="70"><div class="roomcode"><?php echo $name;?></div></td>
                 </tr>
                 <tr>
-                    <td width="220" height="260">
-                        <div id="item" style="position:absolute; left:0px; top:0px; z-index:1;
-                 visibility: hidden;"></div>
-                    </td>
+                    <td width="220" height="260"><div id="item" style="position:absolute; left:0px; top:0px; z-index:1; visibility: hidden;"></div></td>
                 </tr>
                 <tr>
                     <td width="220" height="201" valign=bottom>
@@ -341,9 +200,8 @@
                             </tr>
                             <tr>
                                 <td height="45" colspan="3" valign="middle" class="message_td">
-                                    <input type="text" id="message" name="message" size="18" />
-                                    <input name="button" id="button" type="button" class="message_btn"
-                                           value="发送" />
+                                    <input type="text" id="message" name="message" size="18" onBlur="this.focus();" onKeyPress="if(event.keyCode==13) {document.getElementById('button').click();}" />
+                                    <input name="button" id="button" type="button" class="message_btn" onClick="send_message()" value="发送" />
                                 </td>
                             </tr>
                         </table>
@@ -355,11 +213,64 @@
 </table>
 <script>
     function get_info() {
-        
+        if(site == "guest"){
+        //    定义元素中的内容
+            document.getElementById('top_box').innerHTML = "<font class='style4'>"+host+"</font>";
+            document.getElementById('bottom_box').innerHTML = guest;
+            document.getElementById('top_box_tongji').innerHTML = "<font class='style4'>获胜:"+host_win+"局</font>";
+            document.getElementById('bottom_box_tongji').innerHTML = "获胜:"+guest_win+"局";
+            if(flag == "guest"){
+            //    若当前走棋的玩家是黑方，显示黑棋玩家走棋图标
+                document.getElementById('bottom_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
+                // 将元素内容定义为空
+                document.getElementById('top_box_flag').innerHTML = "";
+            }else {
+            //    输出红旗玩家走棋图标
+                document.getElementById('top_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
+                // 将元素内容定义为空
+                document.getElementById('buttom_box_flag').innerHTML = "";
+            }
+        }else if (site == host){
+            //    定义元素中的内容
+            document.getElementById('bottom_box').innerHTML = "<font class='style4'>"+host+"</font>";
+            document.getElementById('top_box').innerHTML = guest;
+            document.getElementById('bottom_box_tongji').innerHTML = "<font class='style4'>获胜:"+host_win+"局</font>";
+            document.getElementById('top_box_tongji').innerHTML = "获胜:"+guest_win+"局";
+            if(flag == "host"){
+                //    输出红旗玩家走棋图标
+                document.getElementById('bottom_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
+                // 将元素内容定义为空
+                document.getElementById('top_box_flag').innerHTML = "";
+            }else {
+                //    若当前走棋的玩家是黑方，显示黑棋玩家走棋图标
+                document.getElementById('top_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
+                // 将元素内容定义为空
+                document.getElementById('bottom_box_flag').innerHTML = "";
+
+            }
+        }
+        if (allow_load == 1){
+            pause_time = 0;
+            send_request('get_info.php?roomid=<?php echo $_GET['id'];?> &site = '+site+'&random='+Math.random());
+            document.getElementById("pla").innerHTML =
+                document.getElementById("pla").innerHTML.replace(/<a(.*?)>/ig,"");
+            document.getElementById("pla").innerHTML =
+                document.getElementById("pla").innerHTML.replace(/<\/a>/ig,"");
+        }
+        if (pause_time == 3 || host == "" || guest == "" ){
+            pause_time = 0;
+            send_request('get_info.php?roomid=<?php echo $_GET['id'];?> &site = '+site+'&random='+Math.random());
+        }
+        pause_time ++;
+        if (prompt_count>0){
+            if (prompt_count == 3){
+                prompt_count = 0;
+                close_prompt();
+            }else
+                prompt_count ++;
+        }
     }
-    var message_sum = 5 ;
-    var message_arr= new Array();
-    send_request('get_info?roomid=<?php echo $_GET['id'];?>&site='+site+'&random='+Math.random());
+    send_request('get_info.php?roomid=<?php echo $_GET['id'];?>&site='+site+'&random='+Math.random());
     get_info();
     setInterval("get_info()",1000);
 </script>

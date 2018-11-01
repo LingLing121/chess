@@ -25,29 +25,7 @@ if(isset($_COOKIE["message"])){
     setcookie("message",null);
 }
 //  查询数据库当中的数据
-$query= mysqli_query($connID,"select * from tb_room");
 
-//   将数据库查询到的结果返回到数组中
-$info=mysqli_fetch_array($query);
-//var_dump($info);
-//exit();
-//当$info为空时
-//
-
-////
-////}   初始化变量
-do {
-    $r_num = 0;
-    if ($info['host']) {
-        $r_num++;
-    }
-    if ($info['guest']) {
-        $r_num++;
-    }
-//if($info ='') {
-//         echo "无法获取其他房间信息";
-//}
-}while ($info=mysqli_fetch_array($query));
 
 
 require "view/index.phtml";
