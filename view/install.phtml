@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>登录</title>
+    <link rel="stylesheet" href="./css/install.css">
+    <link rel="stylesheet" href="./css/room.css">
+</head>
+<body>
+<form action="./install.php?action=install" id="form" name="form" method="post">
+    <table class="tab" align="left">
+        <tr>
+            <td width="100" height="46" align="right">
+                <span class="style1">
+                服务器地址:
+                </span>
+            </td>
+            <td width="275" class="input">
+                <input type="text" name="server" value="127.0.0.1" class="text">
+            </td>
+        </tr>
+        <tr>
+            <td width="100" height="46" align="right">
+                <span class="style1">
+               数据库名称:
+                </span>
+            </td>
+            <td width="275" class="input">
+                <input type="text" name="database" class="text">
+            </td>
+        </tr>
+        <tr>
+            <td width="100" height="46" align="right">
+                <span class="style1">
+                账号:
+                </span>
+            </td>
+            <td width="275" class="input">
+                <input type="text" name="username" value="" class="text">
+            </td>
+        </tr>
+        <tr>
+            <td width="100" height="46" align="right">
+                <span class="style1" >
+                密码:
+                </span>
+            </td>
+            <td width="275" class="input">
+                <input type="password" name="password"  class="text">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" value="" class="setup_button">&nbsp;
+                <input type="reset" value="" class="clear_button">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

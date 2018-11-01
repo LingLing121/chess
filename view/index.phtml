@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>中国象棋</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <script type="text/javascript" src="./jquery/jquery-3.3.1.js"></script>
+</head>
+<body>
+<table class="tab">
+    <tr>
+        <td height="40">
+            <span class="style1">昵称：</span>
+        </td>
+    </tr>
+    <tr>
+        <td height="46">
+            <form action="./change_name.php" name="form" method="post">
+                <table width="460" border="0">
+                    <tr>
+                        <td width="360" height="46" class="input">
+                            <input name="nick_name" type="text" class="text" value="<?php $username ?>">
+                        </td>
+                        <td width="100" height="46" >
+                            <input type="submit" value="" class="change_button">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td height="40"><span class="style1">游戏房间：</span></td>
+    </tr>
+    <tr>
+        <td height="46">
+            <form action="./add_d.php" name="form" method="post">
+                <table width="460" border="0">
+                    <tr>
+                        <td width="360" height="46" class="input">
+                            <input name="play_room" value="<?php echo time().'号';?>" type="text" class="text">
+                        </td>
+                        <td width="100" height="46">
+                            <input type="submit" value="" class="create_button">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+    </tr>
+</table>
+<table class="tab1">
+           <tr>
+               <td height="28" valign="middle"><img src="images/room.gif" alt="" width="15" height="17">
+                   <!--输出用户的-->
+                   <a href="join.php?roomid=<?php echo $info['id'];?>">
+                       <!--输出用户名称-->
+                       <font color="#990000"><?php echo $info['name'] ?></font>
+                   </a>
+                   <!--显示房间人数-->
+                   (<?php echo $r_num?>人/2)
+                   [<a href="join.php?roomid=<?php echo $info['id']; ?>">进入房间</a>]
+               </td>
+           </tr>
+</table>
+</body>
+</html>

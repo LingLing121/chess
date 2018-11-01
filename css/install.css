@@ -1,0 +1,54 @@
+body {
+    background-image: url(../images/bg_pic.png);
+    background-size:100%;
+    background-repeat:no-repeat;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+td{
+    font-size:9pt;
+}
+.style1{
+    font-size:24px;
+    font-family:"楷体";
+}
+#form{
+    padding-top:20%;
+    margin-left:20%;
+}
+.tab{
+    width:400px;
+    border:1px;
+}
+.text{
+    width:200px;
+    height:30px;
+    border:0px;
+    border-color:rgba(0,0,0,0);
+    margin-left:20px;
+    background-color:rgba(0,0,0,0);
+    font-size:16px;
+}
+.input{
+    background-image:url(../images/input.png);
+    background-size:100%;
+    background-repeat:no-repeat;
+}
+.setup_button{
+    width:59px;
+    height:30px;
+    background:url(../images/setup.png);
+    background-size:100%;
+    background-repeat:no-repeat;
+    overflow:hidden;
+}
+.clear_button{
+    width:59px;
+    height:30px;
+    background:url(../images/clear.png);
+    background-size:100%;
+    background-repeat:no-repeat;
+    overflow:hidden;
+}

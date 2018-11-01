@@ -1,0 +1,18 @@
+CREATE TABLE `tb_room` (
+  `id` mediumint(9) NOT NULL auto_increment,
+  `name` varchar(25) NOT NULL,
+  `guest` varchar(25),
+  `host` varchar(25),
+  `flag` enum('guest','host') NOT NULL default 'host',
+  `chess` varchar(800) NOT NULL,
+  `time_guest` int(12),
+  `time_host` int(12),
+  `time` int(12) NOT NULL,
+  `moved` varchar(5),
+  `eated` varchar(5),
+  `guest_win` int(9) NOT NULL default '0',
+  `host_win` int(9) NOT NULL default '0',
+  `message_guest` varchar(255),
+  `message_host` varchar(255),
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=gb2312 AUTO_INCREMENT=1 ;
