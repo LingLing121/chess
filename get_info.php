@@ -32,4 +32,4 @@ $message_host = $result['message_host'];
 //    执行更新记录
 mysqli_query($connID,"update tb_room set time = '".time()."'where id ='".$_GET['roomid']."' limit=1");
 //输出最新的棋盘信息
-echo $chess."|".$flag."|".$moved."|".$eated."|".$guest."|".$host."|".$time_guest."|".$time_host."|".$guest_win."|".$host_win."|".$message_guest."|".$message_host;
+echo $chess."|".$flag."|".$moved."|".$eated."|".$guest."|".$host."|".$guest_win."|".$host_win."|".$message_guest."|".$message_host;

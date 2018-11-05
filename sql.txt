@@ -15,4 +15,4 @@ CREATE TABLE `tb_room` (
   `message_guest` varchar(255),
   `message_host` varchar(255),
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=gb2312 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -26,6 +26,8 @@ $host = $info['host'];
 $chess = $info['chess'];
 $flag = $info['flag'];
 $guest_win = $info['guest_win'];
+//echo $guest_win;
+//exit();
 $host_win = $info['host_win'];
 //echo $json_room;
 //当红方不为空时且黑方名称不为空，且当用户名称都不等于黑方红方名称时

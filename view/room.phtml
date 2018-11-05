@@ -91,7 +91,7 @@
                     if (prev_click !=""){
                         //如果棋子走法不对则弹出提示框
                         if(!check(document.getElementById('chess_value_'+prev_click).value,prev_click,num)){
-                            open_prompt("您的操作有误..........",'40%','2%');
+                            open_prompt("您的操作有误.",'40%','2%');
                         }else{
                             //执行吃棋子操作，将房间号棋子原始坐标目的坐标传递到submit.php文件当中
                             send_request("submit.php?roomid=<?php echo $_GET['id'];?>&from="+prev_click+"&to="+num+"&site="+site+"&time="+Math.random());
@@ -108,7 +108,6 @@
 
             }
         }
-
         //初始化变量
         var prompt_count=0;
         //输出提示框所在位置
@@ -175,13 +174,13 @@
         function processRequest() {
             //若请求已经完成,若请求已经发送成功
             if (http_request.readyState == 4 && http_request.status == 200) {
-
                 //如果返回的值为end
                 if (http_request.responseText == "ended")
                 //页面跳回到首页
                     document.location.href = "index.php";
                 //将返回的值以|符号分开
                 text = http_request.responseText.split("|");
+                // alert(text);
                 //如果返回的值为真
                 if (http_request.responseText) {
                     //获取被吃了的棋子信息
@@ -190,6 +189,7 @@
                     message_guest = decodeURI(text[8]);
                     //获取红方的聊天信息
                     message_host = decodeURI(text[9]);
+                    // alert(message_host);
                     //获取黑方赢了的次数
                     guest_win = text[6];
                     //获取红方赢了的次数
@@ -455,17 +455,25 @@
             div.scrollTop = div.scrollHeight;
         }
     }
-    function get_info() {               //定义get_info()函数
-        if(guest && message_guest && prev_message_guest != message_guest){  //如果黑棋玩家聊天信息有变化
+    //定义get_info()函数
+    function get_info() {
+        //如果黑棋玩家聊天信息有变化
+        if(guest && message_guest && prev_message_guest != message_guest){
+            //输出黑棋玩家聊天信息
             show_message(guest + ":" + message_guest+"<br />");//输出黑棋玩家聊天信息
             // alert(show_message(guest + ":" + message_guest+"<br />"));
-            prev_message_guest = message_guest;//将当前聊天信息定义为上一条聊天信息
+            //将当前聊天信息定义为上一条聊天信息
+            prev_message_guest = message_guest;
         }
-        if(host && message_host && prev_message_host != message_host){ //如果红棋玩家聊天信息有变化
-            show_message(host + ":" + message_host+"<br />");//输出红棋玩家聊天信息
-            prev_message_host = message_host;//将当前聊天信息定义为上一条聊天信息
+        //如果红棋玩家聊天信息有变化
+        if(host && message_host && prev_message_host != message_host){
+            //输出红棋玩家聊天信息
+            show_message(host + ":" + message_host+"<br />");
+            //将当前聊天信息定义为上一条聊天信息
+            prev_message_host = message_host;
         }
-        if (site == "guest") {                //如果执行当前操作的是黑棋玩家
+        //如果执行当前操作的是黑棋玩家
+        if (site == "guest") {
             document.getElementById('top_box').innerHTML = "<font class='style4'>" + host + "</font>";//定义指定元素中的内容
             document.getElementById('bottom_box').innerHTML = guest;//定义指定元素中的内容
             document.getElementById('top_box_tongji').innerHTML = "<font class='style4'>获胜：" + host_win + " 局</font>";//定义指定元素中的内容
