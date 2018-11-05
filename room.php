@@ -8,7 +8,7 @@
 include "./function.php";
 include "./conn/conn.php";
 //获取房间id房间信息
-$query=mysqli_query($connID,"select * from tb_room where id='".$_GET['id']."'");
+$query=mysqli_query($connID,"select * from tb_room where id=".$_GET['id']);
 //将获取到的信息进行数化
 $info=mysqli_fetch_array($query);
 mysqli_set_charset($connID, "utf8");
@@ -18,8 +18,8 @@ if(!$info){
     header("location:index.php");
     exit();
 }
-
 $name= $info['name'];
+
 //$name=iconv("gbk","utf-8",$name);
 $guest = $info['guest'];
 $host = $info['host'];
@@ -45,10 +45,7 @@ if(isset($_COOKIE['message'])){
 $json_room=json_encode($info,true);
 require "./view/room.phtml";
 
-//
-//header("Content-Type:application/json;charset=utf-8");
-//error_reporting(E_ERROR | E_PARSE);
-//exit($json_room);
+
 ?>
 
 

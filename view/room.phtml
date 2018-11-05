@@ -73,7 +73,7 @@
             if (site != flag){
                 //如果当前的site值不等于棋子的走棋标记，弹出提示框信息提示
                 open_prompt("对方走棋",'40%','2%');
-            //    否则执行走棋操作
+                //    否则执行走棋操作
             } else {
                 //关闭提示框
                 close_prompt();
@@ -91,7 +91,7 @@
                     if (prev_click !=""){
                         //如果棋子走法不对则弹出提示框
                         if(!check(document.getElementById('chess_value_'+prev_click).value,prev_click,num)){
-                            open_prompt("您的操作有误",'40%','2%');
+                            open_prompt("您的操作有误..........",'40%','2%');
                         }else{
                             //执行吃棋子操作，将房间号棋子原始坐标目的坐标传递到submit.php文件当中
                             send_request("submit.php?roomid=<?php echo $_GET['id'];?>&from="+prev_click+"&to="+num+"&site="+site+"&time="+Math.random());
@@ -173,157 +173,156 @@
         var text = new Array();
         //设置棋盘中的信息提示框
         function processRequest() {
-            //若请求已经完成
-            if (http_request.readyState == 4){
-                //若请求已经发送成功
-                if(http_request.status == 200){
-                    //如果返回的值为end
-                    if (http_request.responseText == "ended"){
-                        //页面跳回到首页
-                        document.location.href = "index.php";
-                        //将返回的值以|符号分开
-                        text =http_request.responseText.split("|");
-                        //如果返回的值为真
-                        if (http_request.responseText){
-                            //获取被吃了的棋子信息
-                            t3 = text[3];
-                            //获取黑方的聊天信息
-                            message_guest = decodeURI(text[8]);
-                            //获取红方的聊天信息
-                            message_host = decodeURI(text[9]);
-                            //获取黑方赢了的次数
-                            guest_win = text[6];
-                            //获取红方赢了的次数
-                            host_win = text[7];
-                            //若黑方玩家名称为空
-                            if (text[4] == ""){
-                                //发出提示框
-                                open_prompt(guest+"退出房间！","40%","2%");
-                                //将黑方玩家定义为空
-                                guest = "";
-                                //重置玩家时间
-                                prompt_pause_time = 0;
-                                //为变量赋值
-                                allow_load = 0;
-                            }else {
-                                //发出提示框
-                                open_prompt(text[4]+"进入房间","40%","2%");
-                                //重新定义黑方玩家
-                                guest = text[4];
-                                //重新定义走棋标志
-                                flag = text[1];
-                                //为棋盘重新布局
-                                document.getElementById('pla').innerHTML = form_chess(text[0]);
-                            }
-                        }
-                        //若红方玩家名称有变化
-                        if (text[5] != host){
-                            //若红方玩家名称为空
-                            if(text[5] == ""){
-                                //打开提示框
-                                open_prompt(host+"对方退出房间，你已成为房主","40%","2%");
-                                //将红方玩家定义为空
-                                host = "";
-                                //重置定义时间
-                                prompt_pause_time= 0;
-                                //给变量赋值
-                                allow_load = 0;
-                                //若当前操作玩家为黑方
-                                if (site == 'guest'){
-                                    //过一秒重新加入游戏
-                                    setTimeout("location.href = 'join.php?roomid=<?php echo $_GET['id'];?>'",1000);
-                                }
-                            }
-                        }
-                        if (now_chess !=text[0]&& text[0]){
-                            //    对棋子重新布局
-                            document.getElementById("pla").innerHTML =form_chess(text[0]);
-                        //    重新定义当前走棋标志
+            //若请求已经完成,若请求已经发送成功
+            if (http_request.readyState == 4 && http_request.status == 200) {
+
+                //如果返回的值为end
+                if (http_request.responseText == "ended")
+                //页面跳回到首页
+                    document.location.href = "index.php";
+                //将返回的值以|符号分开
+                text = http_request.responseText.split("|");
+                //如果返回的值为真
+                if (http_request.responseText) {
+                    //获取被吃了的棋子信息
+                    t3 = text[3];
+                    //获取黑方的聊天信息
+                    message_guest = decodeURI(text[8]);
+                    //获取红方的聊天信息
+                    message_host = decodeURI(text[9]);
+                    //获取黑方赢了的次数
+                    guest_win = text[6];
+                    //获取红方赢了的次数
+                    host_win = text[7];
+                    if (text[4] != guest) {
+                        //若黑方玩家名称为空
+                        if (text[4] == "") {
+                            //发出提示框
+                            open_prompt(guest + "退出房间！", "40%", "2%");
+                            //将黑方玩家定义为空
+                            guest = "";
+                            //重置玩家时间
+                            prompt_pause_time = 0;
+                            //为变量赋值
+                            allow_load = 0;
+                        } else {
+                            //发出提示框
+                            open_prompt(text[4] + "进入房间", "40%", "2%");
+                            //重新定义黑方玩家
+                            guest = text[4];
+                            //重新定义走棋标志
                             flag = text[1];
-                            //重新定义当前移动棋子
-                            moved = text[2];
-                            //如果当前操作时要走棋的玩家
-                            if (site == flag){
-                                //为变量赋值
-                                allow_load = 0;
-                            }
-                            //当黑方将棋被吃时
-                            if (text[3] == "000" && site == "guest"){
-                                //创建div元素
-                                resultDiv = document.createElement("div");
-                                //为Div设置class属性
-                                resultDiv.className = "imgDiv";
-                            //    为div设置图片
-                                resultDiv.innerHTML = "<img src='./images/failure.png' width='100%' height='100%'>";
-                            //    向body中添加div元素
-                                document.body.appendChild(resultDiv);
-                            //    过三秒后移除div元素
-                                setTimeout("document.body.removeChild(resultDiv)",3000);
-                            //    将被吃的棋子赋值变量给eated
-                                eated =text[3];
-                                //将游戏结束的变量定义为1
-                                game_ended = 1;
-                            //    为变量赋值
-                                allow_load = 1;
-                            //    将提示框中的时间定义为0
-                                prompt_pause_time = 0 ;
-                            }else if (text[3] == "100" && site == "host"){
-                                //创建div元素
-                                resultDiv = document.createElement("div");
-                                //为Div设置class属性
-                                resultDiv.className = "imgDiv";
-                                //    为div设置图片
-                                resultDiv.innerHTML = "<img src='./images/failure.png' width='100%' height='100%'>";
-                                //    向body中添加div元素
-                                document.body.appendChild(resultDiv);
-                                //    过三秒后移除div元素
-                                setTimeout("document.body.removeChild(resultDiv)",3000);
-                                //    将被吃的棋子赋值变量给eated
-                                eated =text[3];
-                                //将游戏结束的变量定义为1
-                                game_ended = 1;
-                                //    将提示框中的时间定义为0
-                                prompt_pause_time = 0 ;
-                            }else if (text[3] == "000" && site == "host") {
-                                //创建div元素
-                                resultDiv = document.createElement("div");
-                                //为Div设置class属性
-                                resultDiv.className = "imgDiv";
-                                //    为div设置图片
-                                resultDiv.innerHTML = "<img src='./images/success.png' width='100%' height='100%'>";
-                                //    向body中添加div元素
-                                document.body.appendChild(resultDiv);
-                                //    过三秒后移除div元素
-                                setTimeout("document.body.removeChild(resultDiv)",3000);
-                                //    将被吃的棋子赋值变量给eated
-                                eated =text[3];
-                                //将游戏结束的变量定义为1
-                                game_ended = 1;
-                                //    将提示框中的时间定义为0
-                                prompt_pause_time = 0 ;
-                            }else if (text[3] == "100" && site == "guest") {
-                                //创建div元素
-                                resultDiv = document.createElement("div");
-                                //为Div设置class属性
-                                resultDiv.className = "imgDiv";
-                                //    为div设置图片
-                                resultDiv.innerHTML = "<img src='./images/success.png' width='100%' height='100%'>";
-                                //    向body中添加div元素
-                                document.body.appendChild(resultDiv);
-                                //    过三秒后移除div元素
-                                setTimeout("document.body.removeChild(resultDiv)",3000);
-                                //    将被吃的棋子赋值变量给eated
-                                eated =text[3];
-                                //将游戏结束的变量定义为1
-                                game_ended = 1;
-                                //    将提示框中的时间定义为0
-                                prompt_pause_time = 0 ;
-                            //    如果有新的棋子被吃
-                            }else if (text[3] && eated != text[3] && text[3] !='blank'){
-                                //将被吃的棋子赋值给变量eated
-                                eated = text[3];
+                            //为棋盘重新布局
+                            document.getElementById("pla").innerHTML = form_chess(text[0]);
+                        }
+                    }
+                    //若红方玩家名称有变化
+                    if (text[5] != host) {
+                        //若红方玩家名称为空
+                        if (text[5] == "") {
+                            //打开提示框
+                            open_prompt(host + "对方退出房间，你已成为房主", "40%", "2%");
+                            //将红方玩家定义为空
+                            host = "";
+                            //重置定义时间
+                            prompt_pause_time = 0;
+                            //给变量赋值
+                            allow_load = 0;
+                            //若当前操作玩家为黑方
+                            if (site == 'guest') {
+                                //过一秒重新加入游戏
+                                setTimeout("location.href = 'join.php?roomid=<?php echo $_GET['id'];?>'", 1000);
                             }
                         }
+                    }
+                }
+                if (now_chess != text[0] && text[0]) {
+                    //    对棋子重新布局
+                    document.getElementById("pla").innerHTML = form_chess(text[0]);
+                    //    重新定义当前走棋标志
+                    flag = text[1];
+                    //重新定义当前移动棋子
+                    moved = text[2];
+                    //如果当前操作时要走棋的玩家
+                    if (site == flag) {
+                        //为变量赋值
+                        allow_load = 0;
+                    }
+                    //当黑方将棋被吃时
+                    if (text[3] == "000" && site == "guest") {
+                        //创建div元素
+                        resultDiv = document.createElement("div");
+                        //为Div设置class属性
+                        resultDiv.className = "imgDiv";
+                        //    为div设置图片
+                        resultDiv.innerHTML = "<img src='./images/failure.png' width='100%' height='100%'>";
+                        //    向body中添加div元素
+                        document.body.appendChild(resultDiv);
+                        //    过三秒后移除div元素
+                        setTimeout("document.body.removeChild(resultDiv)", 3000);
+                        //    将被吃的棋子赋值变量给eated
+                        eated = text[3];
+                        //将游戏结束的变量定义为1
+                        game_ended = 1;
+                        //    为变量赋值
+                        allow_load = 1;
+                        //    将提示框中的时间定义为0
+                        prompt_pause_time = 0;
+                    } else if (text[3] == "100" && site == "host") {
+                        //创建div元素
+                        resultDiv = document.createElement("div");
+                        //为Div设置class属性
+                        resultDiv.className = "imgDiv";
+                        //    为div设置图片
+                        resultDiv.innerHTML = "<img src='./images/failure.png' width='100%' height='100%'>";
+                        //    向body中添加div元素
+                        document.body.appendChild(resultDiv);
+                        //    过三秒后移除div元素
+                        setTimeout("document.body.removeChild(resultDiv)", 3000);
+                        //    将被吃的棋子赋值变量给eated
+                        eated = text[3];
+                        //将游戏结束的变量定义为1
+                        game_ended = 1;
+                        //    将提示框中的时间定义为0
+                        prompt_pause_time = 0;
+                    } else if (text[3] == "000" && site == "host") {
+                        //创建div元素
+                        resultDiv = document.createElement("div");
+                        //为Div设置class属性
+                        resultDiv.className = "imgDiv";
+                        //    为div设置图片
+                        resultDiv.innerHTML = "<img src='./images/success.png' width='100%' height='100%'>";
+                        //    向body中添加div元素
+                        document.body.appendChild(resultDiv);
+                        //    过三秒后移除div元素
+                        setTimeout("document.body.removeChild(resultDiv)", 3000);
+                        //    将被吃的棋子赋值变量给eated
+                        eated = text[3];
+                        //将游戏结束的变量定义为1
+                        game_ended = 1;
+                        //    将提示框中的时间定义为0
+                        prompt_pause_time = 0;
+                    } else if (text[3] == "100" && site == "guest") {
+                        //创建div元素
+                        resultDiv = document.createElement("div");
+                        //为Div设置class属性
+                        resultDiv.className = "imgDiv";
+                        //    为div设置图片
+                        resultDiv.innerHTML = "<img src='./images/success.png' width='100%' height='100%'>";
+                        //    向body中添加div元素
+                        document.body.appendChild(resultDiv);
+                        //    过三秒后移除div元素
+                        setTimeout("document.body.removeChild(resultDiv)", 3000);
+                        //    将被吃的棋子赋值变量给eated
+                        eated = text[3];
+                        //将游戏结束的变量定义为1
+                        game_ended = 1;
+                        //    将提示框中的时间定义为0
+                        prompt_pause_time = 0;
+                        //    如果有新的棋子被吃
+                    } else if (text[3] && eated != text[3] && text[3] != 'blank') {
+                        //将被吃的棋子赋值给变量eated
+                        eated = text[3];
                     }
                 }
             }
@@ -385,7 +384,7 @@
             </table>
         </td>
         <td width="3" rowspan="3" >
-                        <div id="pla"></div>
+            <div id="pla"></div>
         </td>
         <td width="240" align="right" valign=top>
             <table style="position:relative;">
@@ -423,12 +422,13 @@
     </tr>
 </table>
 <script>
-//    每次显示五条信息
+    //    每次显示五条信息
     var message_sum = 5 ;
     //定义空的数组
     var message_arr = new Array();
     //输出聊天信息
     function show_message(message) {
+        // alert(message);
         var div = document.getElementById("message_pla");
         //如果聊天记录少于5条
         if (message_arr.length< message_sum){
@@ -449,138 +449,97 @@
             div.innerHTML = "";
             //利用for循环输出数组中后五条信息
             for (var i = 1; i<message_sum; i ++){
-              div.innerHTML += message_arr[i];
+                div.innerHTML += message_arr[i];
             }
             //将滚条始终在最底下
             div.scrollTop = div.scrollHeight;
         }
     }
-    function get_info() {
-        //如果黑方聊天信息有变化
-        if (guest && message_guest &&prev_message_guest != message_guest){
-            //输出黑方玩家聊天信息
-            show_message(guest+":"+message_guest+"<br />");
-            //当前聊天信息定义为上一条聊天信息
-            prev_message_guest = message_guest;
+    function get_info() {               //定义get_info()函数
+        if(guest && message_guest && prev_message_guest != message_guest){  //如果黑棋玩家聊天信息有变化
+            show_message(guest + ":" + message_guest+"<br />");//输出黑棋玩家聊天信息
+            // alert(show_message(guest + ":" + message_guest+"<br />"));
+            prev_message_guest = message_guest;//将当前聊天信息定义为上一条聊天信息
         }
-        //如果红方聊天信息有变化
-        if (host && message_host &&prev_message_host != message_host){
-            //输出红方玩家聊天信息
-            show_message(host+":"+message_host+"<br />");
-            //设置当前聊天记录为上一条聊天记录
-            prev_message_host = message_host;
+        if(host && message_host && prev_message_host != message_host){ //如果红棋玩家聊天信息有变化
+            show_message(host + ":" + message_host+"<br />");//输出红棋玩家聊天信息
+            prev_message_host = message_host;//将当前聊天信息定义为上一条聊天信息
         }
-        if(site == "guest"){
-            //    定义元素中的内容
-            document.getElementById('top_box').innerHTML = "<font class='style4'>"+host+"</font>";
-            document.getElementById('bottom_box').innerHTML = guest;
-            document.getElementById('top_box_tongji').innerHTML = "<font class='style4'>获胜:"+host_win+"局</font>";
-            document.getElementById('bottom_box_tongji').innerHTML = "获胜:"+guest_win+"局";
-            if(flag == "guest"){
-                //    若当前走棋的玩家是黑方，显示黑棋玩家走棋图标
+        if (site == "guest") {                //如果执行当前操作的是黑棋玩家
+            document.getElementById('top_box').innerHTML = "<font class='style4'>" + host + "</font>";//定义指定元素中的内容
+            document.getElementById('bottom_box').innerHTML = guest;//定义指定元素中的内容
+            document.getElementById('top_box_tongji').innerHTML = "<font class='style4'>获胜：" + host_win + " 局</font>";//定义指定元素中的内容
+            document.getElementById('bottom_box_tongji').innerHTML = "获胜：" + guest_win + " 局";//定义指定元素中的内容
+            if (flag == "guest") {             //如果当前要走棋的是黑棋玩家
+                //黑棋玩家输出走棋图标
                 document.getElementById('bottom_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
-                // 将元素内容定义为空
-                document.getElementById('top_box_flag').innerHTML = "";
-            }else {
-                //    输出红旗玩家走棋图标
-                document.getElementById('top_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
-                // 将元素内容定义为空
-                document.getElementById('buttom_box_flag').innerHTML = "";
+                document.getElementById('top_box_flag').innerHTML = "";//将元素中的内容定义为空
             }
-        }else if (site == "host"){
-            //    定义元素中的内容
-            document.getElementById('bottom_box').innerHTML = "<font class='style4'>"+host+"</font>";
-            document.getElementById('top_box').innerHTML = guest;
-            document.getElementById('bottom_box_tongji').innerHTML = "<font class='style4'>获胜:"+host_win+"局</font>";
-            document.getElementById('top_box_tongji').innerHTML = "获胜:"+guest_win+"局";
-            if(flag == "host"){
-                //    输出红旗玩家走棋图标
+            else {
+                //红棋玩家输出走棋图标
+                document.getElementById('top_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
+                document.getElementById('bottom_box_flag').innerHTML = "";//将元素中的内容定义为空
+            }
+        } else if (site == "host") {               //如果执行当前操作的是红棋玩家
+            document.getElementById('bottom_box').innerHTML = "<font class='style4'>" + host + "</font>";//定义指定元素中的内容
+            document.getElementById('top_box').innerHTML = guest;//定义指定元素中的内容
+            document.getElementById('bottom_box_tongji').innerHTML = "<font class='style4'>获胜：" + host_win + " 局</font>";//定义指定元素中的内容
+            document.getElementById('top_box_tongji').innerHTML = "获胜：" + guest_win + " 局";//定义指定元素中的内容
+            if (flag == "host") {              //如果当前要走棋的是红棋玩家
+                //红棋玩家输出走棋图标
                 document.getElementById('bottom_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
-                // 将元素内容定义为空
-                document.getElementById('top_box_flag').innerHTML = "";
-            }else {
-                //    若当前走棋的玩家是黑方，显示黑棋玩家走棋图标
+                document.getElementById('top_box_flag').innerHTML = "";//将元素中的内容定义为空
+            }
+            else {
+                //黑棋玩家输出走棋图标
                 document.getElementById('top_box_flag').innerHTML = "<img src='./images/move.gif' width='27' height='16'>";
-                // 将元素内容定义为空
-                document.getElementById('bottom_box_flag').innerHTML = "";
-
+                document.getElementById('bottom_box_flag').innerHTML = "";//将元素中的内容定义为空
             }
         }
-        //若闪烁棋子变量不为空
-        if (chess_flash != ""){
-            if (flash_status  == 0){
-                //将棋子定义为隐藏
-                document.getElementById("chess_"+chess_flash).style.visibility = "hidden";
-                //将闪烁状态定义为1
-                flash_status = 1;
-            } else {
-            //    将棋子设置为可见
-                document.getElementById("chess_"+chess_flash).style.visibility = "visible";
-                //将闪烁状态定义为0
-                flash_status = 0;
+        if(chess_flash != ""){//如果闪烁棋子变量的值不为空
+            if(flash_status == 0){//如果闪烁状态变量值为0
+                document.getElementById("chess_"+chess_flash).style.visibility = "hidden";//将该棋子设置为隐藏
+                flash_status = 1;//将闪烁状态变量值定义为1
+            }else{
+                document.getElementById("chess_"+chess_flash).style.visibility = "visible";//将该棋子设置为可见
+                flash_status = 0;//将闪烁状态变量值定义为0
             }
         }
-        //如果有棋子移动
-        if (moved){
-            //将moved以逗号分割为数组
-            var moved_split = moved.split(",");
-            //为数组中的第一个元素添加样式
-            document.getElementById("chess_"+moved_split[0]).className = "moved";
-            //为数组中的第二个元素添加样式
-            document.getElementById("chess_"+moved_split[1]).className = "moved";
+        if(moved){    //如果有棋子移动
+            var moved_split = moved.split(",");//将moved值以逗号为分割符分割为数组
+            document.getElementById("chess_"+moved_split[0]).className = "moved";  //为数组中第一个元素值添加样式
+            document.getElementById("chess_"+moved_split[1]).className = "moved";  //为数组中第二个元素值添加样式
         }
-        if (allow_load == 1){
-            //初始化变量
-            pause_time = 0;
-            //获取棋盘信息
-            send_request('get_info.php?roomid=<?php echo $_GET['id'];?> &site = '+site+'&random='+Math.random());
-            //移除棋子超链接开始标志
-            document.getElementById("pla").innerHTML =
-                document.getElementById("pla").innerHTML.replace(/<a(.*?)>/ig,"");
-            //移除棋子超链接结束标志
-            document.getElementById("pla").innerHTML =
-                document.getElementById("pla").innerHTML.replace(/<\/a>/ig,"");
+        if(allow_load == 1){
+            pause_time = 0;             //初始化变量
+            send_request('get_info.php?roomid=<?php echo $_GET['id'];?>&site='+site+'&random='+Math.random());//获取棋盘信息
+            //移除棋子的超链接开始标记<a>
+            document.getElementById("pla").innerHTML = document.getElementById("pla").innerHTML.replace(/<a(.*?)>/ig, "");
+            //移除棋子的超链接结束标记</a>
+            document.getElementById("pla").innerHTML = document.getElementById("pla").innerHTML.replace(/<\/a>/ig, "");
         }
-        if (pause_time == 3 || host == "" || guest == "" ){
-            //为变量赋值
-            pause_time = 0;
-            //获取棋盘信息
-            send_request('get_info.php?roomid=<?php echo $_GET['id'];?> &site = '+site+'&random='+Math.random());
+        if(pause_time == 3 || host == "" || guest == ""){
+            pause_time = 0;//为变量赋值
+            send_request('get_info.php?roomid=<?php echo $_GET['id'];?>&site='+site+'&random='+Math.random());       //获取棋盘信息
         }
-        //计时器自加1
-        pause_time ++;
-        //如果变量值大于0
-        if (prompt_count>0){
-            //如果变量值=3
-            if (prompt_count == 3){
-                //将变量重新定义为0
-                prompt_count = 0;
-                //关闭提示框
-                close_prompt();
+        pause_time ++;          //计时器自加1操作
+        if(prompt_count > 0){//如果变量值大于0
+            if(prompt_count == 3){//如果变量值等于3
+                prompt_count = 0;//将变量值重新定义为0
+                close_prompt();//关闭提示框
             }else
-            // 否则将变量进行+1操作
-                prompt_count ++;
+                prompt_count ++;//将变量值执行加1操作
         }
-        //如果游戏结束变量为1
-        if (game_ended==1){
-            //将变量执行+1操作
-            game_ended ++;
-            //若游戏结束变量值为2
-        } else if (game_ended == 2){
-            //如果当前操作玩家为红方
-            if (site == "host"){
-                //如果红方帅被吃
-                if (t3 == "100"){
-                    //黑方玩家胜利次数+1
-                    guest_win ++;
-                } else {
-                    //否则，红方胜利次数+1
-                    host_win ++;
-                }
-                //记录当前棋盘胜负，重新开局
-                send_request("restart.php?roomid=<?php echo $_GET['id'];?>&guest_win="+guest_win+"&host_win="+host_win+'&random='+Math.random());
-                //将游戏结束变量定义为0
-                game_ended = 0;
+        if(game_ended == 1)//如果游戏结束变量值为1
+            game_ended ++;//将变量执行加1操作
+        else if(game_ended == 2){//如果游戏结束变量值为2
+            if(site == "host"){//如果执行当前操作的是红棋玩家
+                if(t3 == "100")//如果红棋“帅”被吃
+                    guest_win ++;        //黑棋方赢一场次，在数据表中加1
+                else
+                    host_win ++;         //红棋方赢一场次，在数据表中加1
+                send_request("restart.php?roomid=<?php echo $_GET['id'];?>&guest_win="+guest_win+"&host_win="+host_win+'&random='+Math.random());     //记录当前棋盘胜负，重新开局
+                game_ended = 0;//将游戏结束变量值定义为0
             }
         }
     }

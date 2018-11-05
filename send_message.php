@@ -8,5 +8,5 @@
 include "./function.php";
 include "./conn/conn.php";
 if($_GET['message']){
-    mysqli_query($connID,"update tb_room set 'message_".$_GET['site']."'='".$_GET['message']."'where id ='".$_GET['roomid']."'");
+    mysqli_query($connID,"update tb_room set message_".$_GET['site']."='".$_GET['message']."'where id =".$_GET['roomid']);
 }
