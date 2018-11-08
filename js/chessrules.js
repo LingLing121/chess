@@ -157,42 +157,24 @@ function check(chess,from,to) {
             }
 
         }
-        //控制车向右走
-        if (to - from >0 && to - from < 0){
-            //定义变量用户储存原始坐标和目的坐标之间的棋子数量
-            var count = 0;
-            //原始坐标每次循环+1
-            for (var i = from + 1;i < to; i++ ){
-                // 如果该处棋子的值不等于blank
-                if (document.getElementById("chess_value_"+i).value != "blank") {
-                    //变量自动+1
-                    count++;
-                }
+        if(to - from > 0 && to - from < 9){       //控制“车”向右走
+            var count = 0;    //定义变量用于存储原始坐标和目的坐标之间棋子的数量
+            for(var i = from + 1;i < to;i ++){ //原始坐标的值每次循环加1
+                if(document.getElementById("chess_value_"+i).value != "blank")    //如果该处棋子的值不等于blank
+                    count ++;                 //变量自动加1
             }
-            //若车进行的上方没有棋子
-            if (count==0){
-                //返回的值为1
-                return 1;
-            }
-
+            if(count == 0 )    //如果“车”的行进方向上没有棋子
+                return 1;     //返回值为1
+   //返回值为1
         }
-        //控制车向左走
-        if (from - to>0 &&  from - to < 0){
-            //定义变量用户储存原始坐标和目的坐标之间的棋子数量
-            var count = 0;
-            //目的坐标每次循环+1
-            for (var i = to + 9;i < from; i++){
-                // 如果该处棋子的值不等于blank
-                if (document.getElementById("chess_value_"+i).value != "blank") {
-                    //变量自动+1
-                    count++;
-                }
+        if(from - to > 0 && from - to < 9){       //控制“车”向左走
+            var count = 0;    //定义变量用于存储原始坐标和目的坐标之间棋子的数量
+            for(var i = to + 1;i < from;i ++){    //目的坐标的值每次循环加1
+                if(document.getElementById("chess_value_"+i).value != "blank")    //如果该处棋子的值不等于blank
+                    count ++;              //变量自动加1
             }
-            //若车进行的上方没有棋子
-            if (count==0){
-                //返回的值为1
-                return 1;
-            }
+            if(count == 0 )    //如果“车”的行进方向上没有棋子
+                return 1;//返回值为1
         }
     }
 //    若当前棋子为马

@@ -1,49 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dongf
- * Date: 2018/10/27
- * Time: 18:03
- */
-//调取函数
-include "function.php";
-//调取数据源文件
-include "./conn/conn.php";
-//查询房间号信息
-$query = mysqli_query($connID,"select * from tb_room where id='".$_GET['roomid']."'");
-//将查询结果返回到数组中
-$row = mysqli_fetch_array($query);
-//获取黑方信息
-$guest=$row['guest'];
-//获取红方信息
-$host=$row['host'];
-//当红方和黑方名称都为空时
-if ($guest=="" && $host==""){
-//    执行更新语句
-    mysqli_query($connID,"update tb_room set host ='$username',time_guest='".time()."',time = '".time()."'where id ='".$_GET['roomid']."'");
-}elseif ($guest!=""&&$host !=""){
-//    输出满房
-   setcookie("message","满房");
-//   跳转回首页
-   header("location:index.php");
-   exit();
-//   当红方玩家名称不为空,黑方名称为空,且黑方名称不等于红方玩家名称
-}elseif ($host !=""&&$guest==""&&$username !=$host){
-     mysqli_query($connID,"update tb_room set guest ='$username',time_guest = '".time()."',time = '".time()."'where id ='".$_GET['roomid']."'");
-//当红方为空,黑方不为空
-}elseif ($guest !=""&&$host == ""){
- //执行更新语句
-    mysqli_query($connID,
-        "update tb_room set guest = '',
-               host = '$username',flag = 'host',chess = '".$c."',
-               time_host = '".time()."',
-               time = '".time()."',
-               moved='',eated='',guest_win='0',host_win='0',message_guest= '',message_host='' 
-               where id = '".$_GET['roomid']."'");
+include "./function.php";     //调用函数文件
+include "./conn/conn.php";    //调用数据源文件
+$query = mysqli_query($connID,"select * from tb_room where id = '".$_GET['roomid']."'");     //检索房间号信息
+$row = mysqli_fetch_array($query);//将查询结果集返回到数组中
+$guest = $row['guest'];//获取查询结果中guest字段的值
+$host = $row['host'];//获取查询结果中host字段的值
+if($guest == '' && $host == ''){      //如果黑棋玩家和红棋玩家名称都为空
+    mysqli_query($connID,"update tb_room set host = '$username',time_host = '".time()."',time = '".time()."' where id = '".$_GET['roomid']."'");//执行更新语句
+}elseif($guest != '' && $host != ''){//如果黑棋玩家和红棋玩家名称都不为空
+    setcookie("message","人满为患！");        //定义Cookie变量message的值
+    header("location:index.php");                 //跳转到游戏首页
+    exit;        //退出
+}elseif($host != '' && $guest == '' && $username != $host){                //如果红棋玩家名称不为空，黑棋玩家名称为空，并且黑棋玩家名称不等于红棋玩家名称
+    mysqli_query($connID,"update tb_room set guest = '$username',time_guest = '".time()."',time = '".time()."' where id = '".$_GET['roomid']."'");//执行更新语句
+}elseif($guest != '' && $host == ''){//如果黑棋玩家名称不为空，红棋玩家名称为空
+    mysqli_query($connID,"update tb_room set guest = '',host = '$username',flag = 'host',chess = '".$c."',time_host = '".time()."',time = '".time()."',moved='',eated='',guest_win='0',host_win='0',message_guest= '',message_host='' where id = '".$_GET['roomid']."'");//执行更新语句
 }else{
-    setcookie("message","昵称被占用,请更换");
-    header("location:index.php");
-    exit();
+    setcookie("message","该昵称已被占用，请更换！");         //定义Cookie变量message的值
+    header("location:index.php");                 //跳转到游戏首页
+    exit;        //退出
 }
-header("location:room.php?id=".$_GET['roomid']);
-exit();
+header("location:room.php?id=".$_GET['roomid']);      //进入指定ID号的游戏房间
+exit;        //退出
+?>

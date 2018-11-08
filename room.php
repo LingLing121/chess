@@ -36,8 +36,8 @@ if($host!=''&&  $guest!=''&& $username !=$host &&  $username != $guest){
     exit();
 }
 if($host !=''&&$guest !=''&& $username != $host){
-     header("location:join.php?roomid".$_GET['id']);
-     exit();
+//     header("location:join.php?roomid=".$_GET['id']);
+//     exit();
 }
 if(isset($_COOKIE['message'])){
 

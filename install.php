@@ -23,7 +23,7 @@ if (isset($_POST['server']) && isset($_GET['action']) && $_GET['action'] == 'ins
 //将变量$conn的值写入源文件中
         file_put_contents("./conn/conn.php", $conn);
 //添加数据库中的内容sql语句并利用file_get来获取txt文本中的sql指令
-        $sql_file = file_get_contents("./sql.txt");
+        $sql_file = file_get_contents("./source/sql.txt");
 //        判断数据库是否存在
         if (!mysqli_select_db($connID, $_POST['database'])) {
 //            若不存在则创建一个数据库

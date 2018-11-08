@@ -19,8 +19,12 @@ include "function.php";
 include "./conn/conn.php";
 //
 $query= mysqli_query($connID,"insert into tb_room(id,name,chess,time) values (NULL,'".$_POST['play_room']."','$c','".time()."')");
+//echo $query;
+//////exit();
 $id= mysqli_insert_id($connID);
-    if($id){
+//echo $id;
+//exit();
+    if($id !=""){
     header("location:join.php?roomid=".$id);
     setcookie("message","创建房间成功");
 }

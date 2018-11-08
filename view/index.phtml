@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>中国象棋</title>
     <link rel="stylesheet" href="../css/index.css">
-    <script type="text/javascript" src="./jquery/jquery-3.3.1.js"></script>
 </head>
 <body>
 <table class="tab">
@@ -67,20 +66,22 @@
     if ($info['guest']) {
         $r_num++;
     }
-    ?>
-           <tr>
-               <td height="28" valign="middle"><img src="images/room.gif" alt="" width="15" height="17">
-                   <!--输出用户的-->
-                   <a href="join.php?roomid=<?php echo $info['id'];?>">
-                       <!--输出用户名称-->
-                       <font color="#990000"><?php echo $info['name'] ?></font>
-                   </a>
-                   <!--显示房间人数-->
-                   (<?php echo $r_num?>人/2)
-                   [<a href="join.php?roomid=<?php echo $info['id']; ?>">进入房间</a>]
-               </td>
-           </tr>
-    <?php
+    if ($info['id']!="") {
+        ?>
+        <tr>
+            <td height="28" valign="middle"><img src="images/room.gif" alt="" width="15" height="17">
+                <!--输出用户的-->
+                <a href="join.php?roomid=<?php echo $info['id']; ?>">
+                    <!--输出用户名称-->
+                    <font color="#990000"><?php echo $info['name']; ?></font>
+                </a>
+                <!--显示房间人数-->
+                (<?php echo $r_num ?>人/2)
+                [<a href="join.php?roomid=<?php echo $info['id']; ?>">进入房间</a>]
+            </td>
+        </tr>
+        <?php
+    }
     }while ($info=mysqli_fetch_array($query));
     ?>
 </table>
